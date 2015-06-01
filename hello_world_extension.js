@@ -8,7 +8,7 @@
         return {status: 2, msg: 'Ready'};
     };
 
-      ext.my_first_block = function() {
+      ext.parrot_up = function() {
         // Code that gets executed when the block is run
     };
 
@@ -16,10 +16,10 @@
     var descriptor = {
         blocks: [
             // Block type, block name, function name
-            [' ', 'my first block', 'my_first_block'],
+            ['Int', 'Up', 'parrot_up'],
         ]
     };
 
     // Register the extension
-    ScratchExtensions.register('Sample extension', descriptor, ext);
+    ScratchExtensions.register('Parrot Drone', descriptor, ext);
 })({});
