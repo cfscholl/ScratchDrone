@@ -8,7 +8,7 @@
         return {status: 2, msg: 'Ready'};
     };
 
-      ext.parrot_up = function() {
+    ext.parrot_up = function(amount) {
         // Code that gets executed when the block is run
     };
 
@@ -16,7 +16,7 @@
     var descriptor = {
         blocks: [
             // Block type, block name, function name
-            ['Int', 'Up', 'parrot_up'],
+            [' ', 'Up %n', 'parrot_up',10],
         ]
     };
 
