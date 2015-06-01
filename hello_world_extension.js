@@ -1,4 +1,6 @@
-(function(ext) {
+
+(function(ext) { 
+	
     // Cleanup function when the extension is unloaded
     ext._shutdown = function() {};
 
@@ -21,7 +23,7 @@
 
     ext.takeoff = function(callback) {
 	$.ajax({
-              url: 'localhost:4730/takeoff',
+              url: 'http://localhost:4730/takeoff',
               dataType: 'jsonp',
               success: function( result ) {
                   callback();
@@ -47,7 +49,11 @@
             ['w', 'go to x: %n y: %n', 'parrot_up', 0,0],
             ['w', 'takeoff', 'takeoff', 0,0],
             ['w', 'land', 'land', 0,0],
-        ]
+            ['h', 'when drone detects: %m.recognized', 'detected','Face']
+        ],
+	 menus: {
+        	recognized: ['Face', 'Table']
+    	}
     };
 
     // Register the extension
