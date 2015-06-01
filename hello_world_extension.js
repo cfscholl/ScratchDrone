@@ -1,4 +1,7 @@
 (function(ext) {
+
+	var face = "";
+
     // Cleanup function when the extension is unloaded
     ext._shutdown = function() {};
 
@@ -140,17 +143,31 @@
 	   });
     };
 
-    ext.get_face = function(callback) {
+	window.setInterval(function() {
 	    $.ajax({
-		url: 'http://localhost:4730/get_face',
-		success: function(result) {
+			url: 'http://localhost:4730/get_face',
+			//url: 'http://192.168.1.15:5000/faces',
+			success: function(result) {
                   console.log(result);
-                  callback(result);
-		}
-	   });
+                  face = result;
+		}});
+	}, 1000);
+	
+	window.setInterval(function() {
+	    $.ajax({
+			url: 'http://localhost:4730/get_kinect',
+			success: function(result) {
+                  console.log(result);
+                  face = result;
+		}});
+	}, 1000);
+	
+	
+    ext.get_face = function(value) {
+		console.log("Verify face: "+value+" with "+face+" -- "+(face==value));
+        return face == value;
     };
 
-	
     // Block and block menu descriptions
     var descriptor = {
         blocks: [
@@ -167,7 +184,7 @@
             ['w', 'right %n', 'right', 0.3],
             ['w', 'stop %n', 'stop', 0.3],
             ['w', 'calibrate', 'calibrate', 0.3],
-			['R', '%m.faces detected', 'get_face', 'Peter'],
+			['h', 'when %m.faces detected', 'get_face', 'Peter'],
         ],
 		menus: {
 			faces: ['Peter', 'Yann-Michael', 'Ivan', 'Lode', 'Christophe'],
