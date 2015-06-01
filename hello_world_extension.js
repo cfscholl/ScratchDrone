@@ -11,30 +11,31 @@
     ext.parrot_up = function(x,y) {
         // Code that gets executed when the block is run
 	$.ajax({
-              url: 'localhost:4730/drone/up',
+              url: 'http://localhost:4730/drone/up',
               dataType: 'jsonp',
               success: function( result ) {
-                  callback();
+                  console.log(result);
+				  callback();
               }
         });
     };
 
     ext.takeoff = function(callback) {
-	$.ajax({
-              url: 'localhost:4730/takeoff',
-              dataType: 'jsonp',
-              success: function( result ) {
-                  callback();
-              }
-        });
-    };
+		$.ajax({
+			url: 'http://localhost:4730/takeoff',
+			type: 'GET',
+            success: function(result) {
+                  console.log(result);
+				  callback();
+              }});
+    }
 
     ext.land = function(callback) {
 	    $.ajax({
-		url: 'localhost/land',
-		dataType: 'jsonp',
+		url: 'http://localhost:4730/land',
 		success: function( result  ) {
-                  callback(20);
+                  console.log(result);
+                  callback();
 		}
 	   });
     };
