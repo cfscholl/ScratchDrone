@@ -45,7 +45,7 @@
 	
     ext.up = function(speed, callback) {
 		$.ajax({
-			url: 'http://localhost:4730/up?data='+speed.toString(),
+			url: 'http://localhost:4730/up/'+speed.toString(),
 			type: 'GET',
             success: function(result) {
                   console.log(result);
@@ -55,7 +55,7 @@
 	
     ext.down = function(speed, callback) {
 		$.ajax({
-			url: 'http://localhost:4730/down?data='+speed.toString(),
+			url: 'http://localhost:4730/down/'+speed.toString(),
 			type: 'GET',
             success: function(result) {
                   console.log(result);
@@ -65,7 +65,7 @@
 	
     ext.clockwise = function(speed, callback) {
 		$.ajax({
-			url: 'http://localhost:4730/clockwise?data='+speed.toString(),
+			url: 'http://localhost:4730/clockwise/'+speed.toString(),
 			type: 'GET',
             success: function(result) {
                   console.log(result);
@@ -75,7 +75,7 @@
 	
     ext.counterclockwise = function(speed, callback) {
 		$.ajax({
-			url: 'http://localhost:4730/counterclockwise?data='+speed.toString(),
+			url: 'http://localhost:4730/counterclockwise/'+speed.toString(),
 			type: 'GET',
             success: function(result) {
                   console.log(result);
@@ -85,7 +85,7 @@
 	
     ext.front = function(speed, callback) {
 		$.ajax({
-			url: 'http://localhost:4730/front?data='+speed.toString(),
+			url: 'http://localhost:4730/front/'+speed.toString(),
 			type: 'GET',
             success: function(result) {
                   console.log(result);
@@ -95,7 +95,7 @@
 	
     ext.back = function(speed, callback) {
 		$.ajax({
-			url: 'http://localhost:4730/back?data='+speed.toString(),
+			url: 'http://localhost:4730/back/'+speed.toString(),
 			type: 'GET',
             success: function(result) {
                   console.log(result);
@@ -105,7 +105,7 @@
 	
     ext.left = function(speed, callback) {
 		$.ajax({
-			url: 'http://localhost:4730/left?data='+speed.toString(),
+			url: 'http://localhost:4730/left/'+speed.toString(),
 			type: 'GET',
             success: function(result) {
                   console.log(result);
@@ -115,7 +115,7 @@
 	
     ext.right = function(speed, callback) {
 		$.ajax({
-			url: 'http://localhost:4730/right?data='+speed.toString(),
+			url: 'http://localhost:4730/right/'+speed.toString(),
 			type: 'GET',
             success: function(result) {
                   console.log(result);
@@ -153,18 +153,8 @@
 		}});
 	}, 1000);
 	
-	window.setInterval(function() {
-	    $.ajax({
-			url: 'http://localhost:4730/get_kinect',
-			success: function(result) {
-                  console.log(result);
-                  face = result;
-		}});
-	}, 1000);
-	
-	
     ext.get_face = function(value) {
-		console.log("Verify face: "+value+" with "+face+" -- "+(face==value));
+		//console.log("Verify face: "+value+" with "+face+" -- "+(face==value));
         return face == value;
     };
 

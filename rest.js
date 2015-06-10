@@ -108,4 +108,4 @@ app.get('/set_face/:data', function(req, res, next) {
 });
 
 
-app.listen(process.env.PORT || 4730);
+app.listen(process.env.PORT || 4730, '0.0.0.0');
