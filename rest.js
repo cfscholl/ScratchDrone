@@ -88,3 +88,4 @@ app.get('/:action/:data', function(req, res, next) {
 });
 
 app.listen(port, '0.0.0.0');
+console.log("Rest API listing to "+port);
