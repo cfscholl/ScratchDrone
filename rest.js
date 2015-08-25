@@ -48,7 +48,7 @@ setInterval(function() {
 function executeWhenConnected(req, res, f) {
   if (connected) {
     console.log(req.path);
-    res.status(200).json(f());
+    res.status(200).json( { answer : f() });
   } else {
     setTimeout(function() { executeWhenConnected(req, res, f); }, 10);
   }
@@ -87,4 +87,7 @@ app.get('/:action/:data', function(req, res, next) {
   clientWhenConnected(req, res, req.params.action, req.params.data);
 });
 
+
+
 app.listen(port, '0.0.0.0');
+console.log(port);

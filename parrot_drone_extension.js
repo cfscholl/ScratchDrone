@@ -12,7 +12,7 @@
         blocks: [
             // Block type, block name, function name
             ['w', 'takeoff', 'takeoff'],
-            ['w','blinkRed','blink'],  
+            ['w','blink','blinkRed'],  
             ['w', 'land', 'land'],
             ['w', 'move up %n', 'up', 0.3],
             ['w', 'move down %n', 'down', 0.3],
@@ -28,22 +28,23 @@
     };
 
     descriptor.blocks.forEach(function(action) {
-	    console.log(action[2]);
 	    ext[action[2]] = function() {
+	    	var cb = arguments[arguments.length-1]();
 		//build the url
 		var url = BASE_URL + action[2];
 		for( var i = 0; i < arguments.length-1; i++ ) {
 			url = url+'/'+arguments[i].toString();
 		}
-		console.log(url);
+		//send the ajax call
 	    	$.ajax({
 			url:  url,
 			type: 'GET',
-			success: function(result) {
-				console.log(result);
-				//last argument is the callback
-				arguments[arguments.length]();
-			}});
+			error: function(xhr, status, error) {
+  				console.log("(" + xhr.responseText + ")");
+  				console.log(err.Message);
+			},
+			success: function(result) { cb(); }
+			});
 	    }});
 
     // Register the extension
