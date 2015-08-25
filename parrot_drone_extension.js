@@ -12,6 +12,7 @@
         blocks: [
             // Block type, block name, function name
             ['w', 'takeoff', 'takeoff'],
+            ['w','blinkRed','blink'],  
             ['w', 'land', 'land'],
             ['w', 'move up %n', 'up', 0.3],
             ['w', 'move down %n', 'down', 0.3],
