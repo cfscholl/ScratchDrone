@@ -3,7 +3,7 @@ var arDrone = require('ar-drone');
 
 var app = express();
 var client  = arDrone.createClient();
-var port = 4730; // REST port (unless env.PORT is set)
+var port = process.env.PORT || 4730; // REST port (unless env.PORT is set)
 var connected = false; // Whether drone is connected or not
 var refreshed = false; // Timer var for refreshing connectivity
 
@@ -11,7 +11,7 @@ var refreshed = false; // Timer var for refreshing connectivity
 app.use(function (req, res, next) {
 
     // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8000');
+    res.setHeader('Access-Control-Allow-Origin', "http://localhost:"+port);
 
     // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -86,4 +86,4 @@ app.get('/:action/:data', function(req, res, next) {
   clientWhenConnected(req, res, req.params.action, req.params.data);
 });
 
-app.listen(process.env.PORT || port, '0.0.0.0');
+app.listen(port, '0.0.0.0');
