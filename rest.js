@@ -1,9 +1,11 @@
 var express = require('express');
-var app = express();
 var arDrone = require('ar-drone');
+
+var app = express();
 var client  = arDrone.createClient();
-var sleep = require('sleep');
-var face = "Lode";
+var port = 4730; // REST port (unless env.PORT is set)
+var connected = false; // Whether drone is connected or not
+var refreshed = false; // Timer var for refreshing connectivity
 
 // Add headers
 app.use(function (req, res, next) {
@@ -25,87 +27,63 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.get('/takeoff', function(req, res, next) {
-	console.log("Takeoff");
-	//res.status(200).json(client.takeoff());
-	//res.json(client.takeoff());
-	client.takeoff(function(err) {
-		console.log("Done takeoff");
-		res.status(200).json("Done");
-	});
+// Keep track of connectivity with drone
+client.on('navdata', function(data) {
+  refreshed = true;
 });
 
-app.get('/land', function(req, res, next) {
-	console.log("Land");
-	//res.status(200).json(client.land());
-	//res.status(200).json("OK");
-	//res.json(client.land());
-	client.land(function(err) {
-		console.log("Done landing");
-		res.status(200).json("Done");
-	});
+setInterval(function() {
+  if (!refreshed) {
+    console.log("Drone _NOT_ connected!");
+    connected = false;
+  } else {
+    connected = true;
+    refreshed = false;
+  }
+}, 1000);
+
+
+
+function executeWhenConnected(req, res, f) {
+  if (connected) {
+    console.log(req.path);
+    res.status(200).json(f());
+  } else {
+    setTimeout(function() { executeWhenConnected(req, res, f); }, 10);
+  }
+}
+
+function clientWhenConnected(req, res, action, data) {
+  var f = client[action];
+  if (!f) {
+    res.status(404).json("No such function: "+action);
+  } else {
+    executeWhenConnected(req, res, function() {
+      if (!data) {
+        res.status(200).json(f.call(client));
+      } else {
+        res.status(200).json(f.call(client, data));
+      }
+    });
+  }
+}
+
+app.get('/connected', function(req, res, next) {
+  res.status(200).json(connected);
 });
 
-app.get('/up/:data', function(req, res, next) {
-	console.log("Up");
-	res.status(200).json(client.up(req.params.data));
+app.get('/blinkRed', function(req, res, next) {
+  executeWhenConnected(req, res, function() {
+    client.animateLeds('blinkRed', 5, 5);
+  });
 });
 
-app.get('/down/:data', function(req, res, next) {
-	console.log("Down");
-	res.status(200).json(client.down(req.params.data));
+app.get('/:action', function(req, res, next) {
+  clientWhenConnected(req, res, req.params.action);
 });
 
-app.get('/clockwise/:data', function(req, res, next) {
-	console.log("Clockwise");
-	res.status(200).json(client.clockwise(req.params.data));
+app.get('/:action/:data', function(req, res, next) {
+  clientWhenConnected(req, res, req.params.action, req.params.data);
 });
 
-app.get('/counterclockwise/:data', function(req, res, next) {
-	console.log("Counterclockwise");
-	res.status(200).json(client.counterClockwise(req.params.data));
-});
-
-app.get('/front/:data', function(req, res, next) {
-	console.log("Front");
-	res.status(200).json(client.front(req.params.data));
-});
-
-app.get('/back/:data', function(req, res, next) {
-	console.log("Back");
-	res.status(200).json(client.back(req.params.data));
-});
-
-app.get('/left/:data', function(req, res, next) {
-	console.log("Left");
-	res.status(200).json(client.left(req.params.data));
-});
-
-app.get('/right/:data', function(req, res, next) {
-	console.log("Right");
-	res.status(200).json(client.right(req.params.data));
-});
-
-app.get('/stop', function(req, res, next) {
-	console.log("Stop");
-	res.status(200).json(client.stop(req.params.data));
-});
-
-app.get('/calibrate', function(req, res, next) {
-	console.log("Calibrate");
-	res.status(200).json(client.calibrate(0));
-});
-
-app.get('/get_face', function(req, res, next) {
-	console.log("Get face: "+face);
-	res.status(200).json(face);
-});
-
-app.get('/set_face/:data', function(req, res, next) {
-	face = req.params.data;
-	console.log("Set face: "+face);
-	res.status(200).json(face);
-});
-
-
-app.listen(process.env.PORT || 4730, '0.0.0.0');
+app.listen(process.env.PORT || port, '0.0.0.0');
