@@ -12,36 +12,49 @@
         blocks: [
             // Block type, block name, function name
             ['w', 'takeoff', 'takeoff'],
-            ['w','blink','blinkRed'],  
             ['w', 'land', 'land'],
-            ['w', 'move up %n', 'up', 0.3],
-            ['w', 'move down %n', 'down', 0.3],
-            ['w', 'turn clockwise %n', 'clockwise', 0.5],
-            ['w', 'turn counterclockwise %n', 'counterclockwise', 0.5],
-            ['w', 'front %n', 'front', 0.3],
-            ['w', 'back %n', 'back', 0.3],
-            ['w', 'left %n', 'left', 0.3],
-            ['w', 'right %n', 'right', 0.3],
-            ['w', 'stop %n', 'stop', 0.3],
+            ['w', 'blink %m.blinkAnimations','blink', 'blinkRed'],
+            ['w', 'set lights %m.colorAnimations for %n seconds','light', 'red', 2],
+            ['w', 'set lights off', 'ligthsOff'],
+            ['w', 'move %m.moveDimension at %n speed', 'move','up',  0.3],
+            ['w', 'turn %m.direction at %n speed', 'turn','left', 0.5],
+            ['w', 'roll %m.direction at %n speed', 'roll','left',0.3],
+            ['w', 'stop', 'stop'],
             ['w', 'calibrate', 'calibrate', 0.3],
-        ]
+            ['w', 'do %m.animations for %n seconds', 'animate', 'yawnDance', 5000]
+        ],
+        menus: {
+          moveDimension: ['up', 'down', 'forwards', 'backwards'],
+          direction: ['left','right'],
+          flips: ['flipAhead', 'flipBehind', 'flipLeft', 'flipRight'],
+          animations:  ['phiM30Deg', 'phi30Deg', 'thetaM30Deg', 'theta30Deg',
+          'theta20degYaw200deg', 'theta20degYawM200deg', 'turnaround', 'turnaroundGodown',
+          'yawShake', 'yawDance', 'phiDance', 'thetaDance', 'vzDance', 'wave', 'phiThetaMixed',
+          'doublePhiThetaMixed'],
+          blinkAnimations: [ 'blinkGreen', 'blinkRed', 'blinkOrange','blinkGreenRed','snakeGreenRed', 'fire', 'redSnake', 'rightMissile',
+          'leftMissile','doubleMissile'],
+          colorAnimations: ['red','green','blank','frontLeftGreenOthersRed',
+          'frontRightGreenOthersRed', 'rearRightGreenOthersRed',
+          'rearLeftGreenOthersRed', 'leftGreenRightRed', 'leftRedRightGreen']
+        }
     };
 
     descriptor.blocks.forEach(function(action) {
 	    ext[action[2]] = function() {
-	    	var cb = arguments[arguments.length-1]();
+	    	var cb = arguments[arguments.length-1];
 		//build the url
 		var url = BASE_URL + action[2];
 		for( var i = 0; i < arguments.length-1; i++ ) {
 			url = url+'/'+arguments[i].toString();
 		}
+    console.log(url);
 		//send the ajax call
 	    	$.ajax({
 			url:  url,
 			type: 'GET',
 			error: function(xhr, status, error) {
   				console.log("(" + xhr.responseText + ")");
-  				console.log(err.Message);
+  				console.log(error.Message);
 			},
 			success: function(result) { cb(); }
 			});

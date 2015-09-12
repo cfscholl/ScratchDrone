@@ -48,7 +48,8 @@ setInterval(function() {
 function executeWhenConnected(req, res, f) {
   if (connected) {
     console.log(req.path);
-    res.status(200).json( { answer : f() });
+    //res.status(200).json( { answer : f() });
+    f();
   } else {
     setTimeout(function() { executeWhenConnected(req, res, f); }, 10);
   }
@@ -61,9 +62,9 @@ function clientWhenConnected(req, res, action, data) {
   } else {
     executeWhenConnected(req, res, function() {
       if (!data) {
-        res.status(200).json(f.call(client));
+        res.status(200).json({answer: f.apply(client)});
       } else {
-        res.status(200).json(f.call(client, data));
+        res.status(200).json({answer: f.apply(client, data.split(","))});
       }
     });
   }
@@ -73,10 +74,58 @@ app.get('/connected', function(req, res, next) {
   res.status(200).json(connected);
 });
 
-app.get('/blinkRed', function(req, res, next) {
-  executeWhenConnected(req, res, function() {
-    client.animateLeds('blinkRed', 5, 5);
-  });
+// blink/animation => client.animateLeds(animation, 5, 5)
+// e.g. blink/blinkRed => client.animateLeds(blinkRed, 5, 5)
+app.get('/blink/:data', function(req, res, next) {
+  var params = req.params.data + ",5,5";
+  clientWhenConnected(req, res,'animateLeds', params);
+});
+// lightsOff => client.animateLeds(blank,5,5);
+app.get('ligthsOff', function(req, res, next) {
+   var params = "blank,5,5";
+   clientWhenConnected(req, res,'animateLeds', params);
+});
+
+// light/animation/duration => client.animateLeds(animation, 5, duration)
+// e.g. light/red,1 => client.animateLeds(red, 5, 1)
+app.get('/light/:color/:duration', function(req, res, next) {
+  var params = [req.params.color, 5, req.params.duration];
+  var paramsAsString = params.reduce(function(p,c,i,a){return p+","+c});
+  clientWhenConnected(req, res, 'animateLeds', paramsAsString);
+});
+
+//End user defines in seconds, but animate takes millisecs
+// animate/action/duration => client.animate(action,duration*1000);
+app.get('/animate/:action/:duration',  function(req, res, next) {
+  var params = [req.params.action, parseInt(req.params.duration)*1000];
+  var paramsAsString = params.reduce(function(p,c,i,a){return p+","+c});
+  clientWhenConnected(req, res, 'animate', paramsAsString);
+});
+
+// turn/left/speed => client.counterClockwise(speed)
+app.get('/turn/left/:data', function(req, res, next) {
+   clientWhenConnected(req, res, 'counterClockwise', req.params.data);
+});
+
+// turn/right/speed => client.clockwise(speed)
+app.get('/turn/right/:data', function(req, res, next) {
+   clientWhenConnected(req, res, 'clockwise', req.params.data);
+});
+
+// move/forwards/speed => client.front(speed)
+app.get('/move/forwards/:data', function(req, res, next) {
+   clientWhenConnected(req, res, 'front', req.params.data);
+});
+
+// move/backwards/speed => client.back(speed)
+app.get('/move/backwards/:data', function(req, res, next) {
+   clientWhenConnected(req, res, 'back', req.params.data);
+});
+
+// roll/left/speed  => client.left(speed)
+// roll/right/speed => client.right(speed)
+app.get('/roll/:action/:data', function(req, res, next) {
+   clientWhenConnected(req, res, req.params.action, req.params.data);
 });
 
 app.get('/:action', function(req, res, next) {
@@ -86,8 +135,6 @@ app.get('/:action', function(req, res, next) {
 app.get('/:action/:data', function(req, res, next) {
   clientWhenConnected(req, res, req.params.action, req.params.data);
 });
-
-
 
 app.listen(port, '0.0.0.0');
 console.log("Rest API listing to "+port);
