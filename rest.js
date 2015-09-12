@@ -74,6 +74,22 @@ app.get('/connected', function(req, res, next) {
   res.status(200).json(connected);
 });
 
+// image recongnition
+/*var pngStream = client.getPngStream();
+var lastPng;
+pngStream
+.on('error', console.log)
+.on('data', function(pngBuffer) {
+       lastPng = pngBuffer;
+});
+
+app.get('/image', function(req, res, next) {
+ console.log("getting image\n");
+ res.writeHead(200, {'Content-Type': 'image/png'});
+ res.end(lastPng);
+ console.log("done getting image\n");
+});*/
+
 // blink/animation => client.animateLeds(animation, 5, 5)
 // e.g. blink/blinkRed => client.animateLeds(blinkRed, 5, 5)
 app.get('/blink/:data', function(req, res, next) {
@@ -125,6 +141,12 @@ app.get('/move/backwards/:data', function(req, res, next) {
 // roll/left/speed  => client.left(speed)
 // roll/right/speed => client.right(speed)
 app.get('/roll/:action/:data', function(req, res, next) {
+   clientWhenConnected(req, res, req.params.action, req.params.data);
+});
+
+// move/up/speed  => client.left(speed)
+// move/down/speed => client.right(speed)
+app.get('/move/:action/:data', function(req, res, next) {
    clientWhenConnected(req, res, req.params.action, req.params.data);
 });
 

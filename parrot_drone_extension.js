@@ -11,17 +11,18 @@
     var descriptor = {
         blocks: [
             // Block type, block name, function name
+            ['w', 'calibrate', 'calibrate', 0],
             ['w', 'takeoff', 'takeoff'],
             ['w', 'land', 'land'],
+            ['w', 'stop', 'stop'],
             ['w', 'blink %m.blinkAnimations','blink', 'blinkRed'],
             ['w', 'set lights %m.colorAnimations for %n seconds','light', 'red', 2],
             ['w', 'set lights off', 'ligthsOff'],
             ['w', 'move %m.moveDimension at %n speed', 'move','up',  0.3],
             ['w', 'turn %m.direction at %n speed', 'turn','left', 0.5],
             ['w', 'roll %m.direction at %n speed', 'roll','left',0.3],
-            ['w', 'stop', 'stop'],
-            ['w', 'calibrate', 'calibrate', 0.3],
-            ['w', 'do %m.animations for %n seconds', 'animate', 'yawnDance', 5000]
+            ['w', 'flip %m.flips for %n seconds', 'animate', 'flipAhead', 5],
+            ['w', 'do %m.animations for %n seconds', 'animate', 'yawnDance', 5]
         ],
         menus: {
           moveDimension: ['up', 'down', 'forwards', 'backwards'],
