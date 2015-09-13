@@ -11,7 +11,7 @@ Running ScratchDrone requires the following steps:
 3) Go to http://scratchx.org/ 
 
 4) Select Open Extension URL and type in the following URL:
-	http://localhost:8000/hello_world_extension.js
+	http://localhost:8000/parrot_drone_extension.js
 
 5) The parrot blocks are now available under more blocks
 
